@@ -1,0 +1,30 @@
+{
+  "db": {
+    "username": "ADMIN",
+    "password": "ADMIN",
+    "database": "TDA",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "development": {
+    "username": "ADMIN",
+    "password": "ADMIN",
+    "database": "TDA",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "ADMIN",
+    "password": "ADMIN",
+    "database": "TDA",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "ADMIN",
+    "password": "ADMIN",
+    "database": "TDA",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
