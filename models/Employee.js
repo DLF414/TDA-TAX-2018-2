@@ -11,7 +11,7 @@ module.exports = (Sequelize, sequelize) => {
             type: Sequelize.STRING
         },
         phone: {
-            type: Sequelize.INTEGER
+            type: Sequelize.STRING
         },
         role: {
             type: Sequelize.STRING
