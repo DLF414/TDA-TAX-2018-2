@@ -4,7 +4,7 @@ const schemas = {
     'account': Joi.object().keys({
         login: Joi.string(),
         password: Joi.string(),
-        created: ,
+        created: Joi.date(),
         role: Joi.string(),
         isBlocked: Joi.boolean() ,
     }),
@@ -31,7 +31,7 @@ const schemas = {
     }),
     'order': Joi.object().keys({
         client: Joi.number().integer(),
-        date: ,
+        date: Joi.date(),
         address: Joi.string(),
         isAccepted: Joi.boolean(),
         acceptedBy: Joi.boolean(),

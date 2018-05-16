@@ -32,4 +32,4 @@ class CarService extends CrudService{
     }
 }
 
-module.exports = ChatService;
+module.exports = carService;
