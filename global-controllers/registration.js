@@ -13,7 +13,6 @@ class RegistrationController extends CrudController {
                 { method: 'post', cb: this.registration }
             ]
         }
-
         this.registerRoutes();
     }
 
