@@ -1,0 +1,543 @@
+swagger: '2.0'
+info:
+  title: TDA-TAX-2018
+  version: 0.0.1
+host: localhost
+schemes:
+  - http
+basePath: /api/v1
+produces:
+  - application/json
+paths:
+  /accounts:
+    get:
+      summary: Get accounts
+      tags:
+        - Accounts
+      parameters:
+        - name: limit
+          in: query
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          type: number
+          format: integer
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              persons:
+                type: array
+                items:
+                  $ref: '#/definitions/Account'
+        '500':
+          description: Server error
+    post:
+      summary: Create account
+      tags:
+        - Accounts
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Account'
+      responses:
+        '201':
+          description: Account created
+          schema:
+            $ref: '#/definitions/Account'
+        '409':
+          description: Already exist
+        '500':
+          description: Server error
+  '/accounts/{id}':
+    get:
+      summary: Get account by id
+      tags:
+        - Accounts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: account item
+          schema:
+            $ref: '#/definitions/Account'
+        '404':
+          description: Not found
+        '500':
+          description: Server error
+    put:
+      summary: Update account
+      tags:
+        - Accounts
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Account'
+      responses:
+        '200':
+          description: Account updated
+          schema:
+            $ref: '#/definitions/Account'
+        '500':
+          description: Server error 
+  /employee:
+    get:
+      summary: Get employees
+      tags:
+        - Employees
+      parameters:
+        - name: limit
+          in: query
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          type: number
+          format: integer
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              persons:
+                type: array
+                items:
+                  $ref: '#/definitions/Employee'
+        '500':
+          description: Server error
+    post:
+      summary: Create employee
+      tags:
+        - Employees
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Employee'    
+      responses:
+        '201':
+          description: Employee created
+          schema:
+            $ref: '#/definitions/Employee'
+        '409':
+          description: Already exist
+        '500':
+          description: Server error
+  '/employee/{id}':
+    get:
+      summary: Get employee by id
+      tags:
+        - Employees
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: employee item
+          schema:
+            $ref: '#/definitions/Employee'
+        '404':
+          description: Not found
+        '500':
+          description: Server error
+    put:
+      summary: Update employee
+      tags:
+        - Employees
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Employee'
+      responses:
+        '200':
+          description: Employee updated
+          schema:
+            $ref: '#/definitions/Employee'
+        '500':
+          description: Server error          
+  /clients:
+    get:
+      summary: Get clients
+      tags:
+        - Clients
+      parameters:
+        - name: limit
+          in: query
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          type: number
+          format: integer
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              persons:
+                type: array
+                items:
+                  $ref: '#/definitions/Client'
+        '500':
+          description: Server error
+    post:
+      summary: Create client
+      tags:
+        - Clients
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Client' 
+      responses:
+        '201':
+          description: Client created
+          schema:
+            $ref: '#/definitions/Client'
+        '409':
+          description: Already exist
+        '500':
+          description: Server error
+  '/clients/{id}':
+    get:
+      summary: Get client by id
+      tags:
+        - Clients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        '200':
+          description: client item
+          schema:
+            $ref: '#/definitions/Client'
+        '404':
+          description: Not found
+        '500':
+          description: Server error
+    put:
+      summary: Update client
+      tags:
+        - Clients
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Client'  
+      responses:
+        '200':
+          description: Client updated
+          schema:
+            $ref: '#/definitions/Client'
+        '500':
+          description: Server error
+  /cars:
+    get:
+      summary: Get cars
+      tags:
+        - Cars
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          required: true
+          type: number
+          format: integer
+        - name: inPark
+          in: query
+          type: boolean
+        - name: attachedTo
+          in: query
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              agents:
+                type: array
+                items:
+                  $ref: '#/definitions/Car'
+        '500':
+          description: Server error
+    post:
+      summary: Create car
+      tags:
+        - Cars
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Car'
+      responses:
+        '201':
+          description: Car created
+          schema:
+            $ref: '#/definitions/Car'
+        '409':
+          description: Already exist
+        '500':
+          description: Server error
+  '/cars/{id}':
+    get:
+      summary: Get car by id
+      tags:
+        - Cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+          format: integer
+      responses:
+        '200':
+          description: Car item
+          schema:
+            $ref: '#/definitions/Car'
+        '404':
+          description: Not found
+        '500':
+          description: Server error
+    put:
+      summary: Car updating
+      tags:
+        - Cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+          format: integer
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Car'
+      responses:
+        '201':
+          description: Car updated
+          schema:
+            $ref: '#/definitions/Car'
+        '500':
+          description: Server error
+  /orders:
+    get:
+      summary: Get orers
+      tags:
+        - Orders
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          type: number
+          format: integer
+        - name: offset
+          in: query
+          required: true
+          type: number
+          format: integer
+        - name: accepted
+          in: query
+          type: boolean
+        - name: clientid
+          in: query
+          type: boolean
+        - name: acceptedBy
+          in: query
+          type: boolean
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              agents:
+                type: array
+                items:
+                  $ref: '#/definitions/Order'
+        '500':
+          description: Server error
+    post:
+      summary: Create order
+      tags:
+        - Orders
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Order'
+      responses:
+        '201':
+          description: Order created
+          schema:
+            $ref: '#/definitions/Order'
+        '409':
+          description: Already exist
+        '500':
+          description: Server error
+  '/orders/{id}':
+    get:
+      summary: Get order by id
+      tags:
+        - Orders
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+          format: integer
+      responses:
+        '200':
+          description: Order item
+          schema:
+            $ref: '#/definitions/Order'
+        '404':
+          description: Not found
+        '500':
+          description: Server error
+    put:
+      summary: Order processing
+      tags:
+        - Orders
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: number
+          format: integer
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/Order'
+      responses:
+        '201':
+          description: Order updated
+          schema:
+            $ref: '#/definitions/Order'
+        '500':
+          description: Server error
+definitions:
+ Account:
+    type: object
+    properties:
+      id:
+        type: number
+        format: integer
+      login:
+        type: string
+      password:
+        type: string
+      created:
+        type: string
+        format: date-time
+      role:
+        type: string
+      isBlocked:
+        type: boolean
+ Client:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/Account/properties/id'
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: number
+        format: integer
+ Employee:
+    type: object
+    properties:
+      id:
+        $ref: '#/definitions/Account/properties/id'
+      name:
+        type: string
+      address:
+        type: string
+      phone:
+        type: number
+        format: integer
+      role:
+        type: string
+      salary:
+        type: number
+        format: integer
+      online:
+        type: boolean
+ Car:
+    type: object
+    properties:
+      id:
+        type: number
+        format: integer
+      model:
+        type: string
+      sign:
+        type: string
+      VIN:
+        type: number
+        format: integer
+      attachedTo:
+        $ref: '#/definitions/Employee/properties/id'
+      inPark:
+        type: boolean
+ Order:
+    type: object
+    properties:
+      id:
+        type: number
+        format: integer
+      client:
+        $ref: '#/definitions/Client/properties/id'
+      date:
+        type: string
+        format: date-time
+      address:
+        type: string
+      isAccepted:
+        type: boolean
+      acceptedBy:
+        $ref: '#/definitions/Employee/properties/id'
+      distance:
+        type: number
+        format: integer
+      bill:
+        type: number
+        format: integer
