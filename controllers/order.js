@@ -1,3 +1,4 @@
+//TODO: ORDER, tut mnogo
 const CrudController = require("./crud");
 const Moment = require('moment');
 
@@ -28,19 +29,12 @@ class OrderController extends CrudController {
     async create(req, res){
         if(!req.body.auth.logged )//&& !ISCLIENT
             throw this.service.errors.InsufficientAccountPermissions;
-//TODO:INVALID ORDER DATA
-        if(req.body.category == null || isNaN(parseInt(req.body.category)))
-            throw this.service.errors.InvalidUri;
-
-        if(!req.body.subject || !req.body.content)
+        if(req.body.address == null || isNaN(parseInt(req.body.client)))
             throw this.service.errors.InvalidInput;
-//TODO: ORDER MODEL
+//TODO: CHECK THIS MODEL
         await this.service.create({
-            subject:req.body.subject,
-            content:req.body.content,
-            category:req.body.category,
-            user_account_id:req.body.auth.payload._id,
-            status:status_id
+            client:req.body.client,
+            address:req.body.address
         });
 
         res.status(200);
@@ -51,19 +45,17 @@ class OrderController extends CrudController {
     async update(req, res){
         if(!req.body.auth.logged )//&& !ISCLIENT
             throw this.service.errors.InsufficientAccountPermissions;
-//TODO:INVALID ORDER DATA
-        if(req.body.category == null || isNaN(parseInt(req.body.category)))
-            throw this.service.errors.InvalidUri;
 
-        if(!req.body.subject || !req.body.content)
+        if(req.body.address == null || isNaN(parseInt(req.body.client)) || isNaN(parseInt(req.body.acceptedBy))||isNaN(parseInt(req.body.distance))||isNaN(parseInt(req.body.bill)))
             throw this.service.errors.InvalidInput;
-//TODO: ORDER MODEL
+//TODO: CHECK MODEL RABOTOSPOSOBNOST
         await this.service.update({
-            subject:req.body.subject,
-            content:req.body.content,
-            category:req.body.category,
-            user_account_id:req.body.auth.payload._id,
-            status:status_id
+            client:req.body.client,
+            address:req.body.address,
+            isAccepted:req.body.isAccepted,
+            acceptedBy:req.body.acceptedBy,
+            distance:req.body.distance,
+            bill:req.body.bill
         });
 
         res.status(200);

@@ -45,10 +45,10 @@ module.exports = (db, config) => {
     );
     const authorisationController = require('./global-controllers/authorisation');
     const apiController = require('./controllers/api')(
-    accountService
-    carService
-    clientService
-    employeeService
+    accountService,
+    carService,
+    clientService,
+    employeeService,
     orderService
     );
 
@@ -56,28 +56,40 @@ module.exports = (db, config) => {
     app.use(cookieParser());
     app.use(bodyParse.json());
 
-    app.use('/', authController);
-    app.use('/', registration);
-    app.use('/api/', authorisationController.ability());
 
-    app.use(express.static(__dirname + '/public/images'));
-    app.use(express.static(__dirname + '/public/styles'));
-    app.use(express.static(__dirname + '/public/scripts'));
+    app.use('/styles', express.static(__dirname + '/styles'));
+    app.use('/scripts', express.static(__dirname + '/scripts'));
+    app.use('/img', express.static(__dirname + '/img'));
+    app.use('/bootstrap', express.static(__dirname + '/bootstrap'));
+    app.set('views', './views');
+    app.set('view engine', 'pug');
 
-    app.get('/main/im', (req, res) => {        
-        res.sendFile(__dirname + '/public/pages/im.html');
+    app.use((req, res, next) => {
+        let auth = {};
+        if (req.cookies['_token']) {
+            try {
+                auth['payload'] = jwt.verify(req.cookies['_token'], config.jwt.secret);
+                auth['logged'] = true;
+            } catch (error) {
+                auth['logged'] = false;
+            }
+        } else {
+            auth['logged'] = false;
+        }
+        req.body['auth'] = auth;
+        next();
     });
 
-    app.get('/login', (req, res) => {
-        res.sendFile(__dirname + '/public/pages/login-page.html');
-    });
-    
-    app.get('/registration', (req, res) => {
-        res.sendFile(__dirname + '/public/pages/registration-page.html');
-    });
 
     app.use('/api/v1', apiController);
     //app.use('/', error);
-
+    app.use((error, req, res, next) => {
+        if(!isNaN(parseInt(error.status))) res.status(parseInt(error.status));
+        else res.status(500);
+        res.json(error);
+    });
+    app.get('*', (req, res)=>{
+        res.render('error',{Code:404, Text:'Not Found'});
+    })
     return app;
 };

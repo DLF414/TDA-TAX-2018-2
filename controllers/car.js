@@ -17,52 +17,41 @@ class CarController extends CrudController {
     }
 
     async readAll(req, res) {
-        if (!req.body.auth.payload.admin && !req.body.auth.payload.moderator)
+        if (!req.body.auth.payload.employee)
             throw this.service.errors.InsufficientAccountPermissions;
         res.json(await this.service.readNE());
     }
 
     async read(req, res) {
-                //TODO: FIX CAR READ HERE
-                let user = await this.service.read(req.params.id);
-                if (req.body.auth.logged)
-                    if (req.params.id == req.body.auth.payload._id) {
-                        emails_in = await this.emails.readAllByFlag('in', req.params.id, {
-                            page: req.query.inpage ? req.query.inpage : undefined,
-                            limit: 10
-                        });
-                        emails_out = await this.emails.readAllByFlag('out', req.params.id, {
-                            page: req.query.outpage ? req.query.outpage : undefined,
-                            limit: 10
-                        });
-                    }
-                res.render('user', {
-                    user: user,
-                    auth: req.body.auth,
-                    emails: { in: emails_in,
-                        out: emails_out
-                    }
+                //TODO:CHECK CAR READ HERE
+        if (req.body.auth.logged && req.body.auth.payload.employee)
+                let car = await this.service.read(req.params.id);
+                res.render('car', {
+                    car: car
                 });
     }
 
     async update(req, res) {
-//TODO:UPDATE CAR FORM
+//TODO:CHECK UPDATE CAR FORM
         if (req.body.auth.logged)
             if (req.body.auth.payload._id != req.params.id) throw this.service.errors.InsufficientAccountPermissions;
 
-        await this.service.update(req.body, req.params.id);
+        await this.service.update({
+            model:req.body.model,
+            sign:req.body.sign,
+            inPark:req.body.inPark,
+            attachedTo:req.body.attachedTo,
+            VIN:req.body.VIN
+        });
         res.status(200);
         res.end();
     }
-//TODO:FIX CREATE CAR HERE
+//TODO:CHECK CREATE CAR HERE
     async create(req, res) {
         if (req.body.auth.logged) throw this.service.errors.InsufficientAccountPermissions;
-        if (!(req.body.signup_username && req.body.signup_email && req.body.signup_password && req.body.signup_confirm)) throw this.service.errors.InvalidInput;
+        if (!(req.body.model && req.body.sign  && req.body.VIN)) throw this.service.errors.InvalidInput;
         let check = await this.service.readNE();
-        let result = re.test(req.body.signup_email);
-        if (!result || req.body.signup_password.length < 8 || req.body.signup_password != req.body.signup_confirm) throw this.service.errors.InvalidInput;
-        if (check.users.includes(req.body.signup_username) || check.emails.includes(req.body.signup_emails)) throw this.service.errors.AccountAlreadyExists;
-        if (check.in_users.includes(req.body.signup_username) || check.in_emails.includes(req.body.signup_emails)) throw this.service.errors.AccountBeingCreated;
+         if (check.cars.includes(req.body.sign) || check.cars.includes(req.body.VIN)) throw this.service.errors.AccountAlreadyExists;
         await this.service.create(req.body, req.headers.host);
         res.status(200);
         res.end();
