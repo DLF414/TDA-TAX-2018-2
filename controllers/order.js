@@ -1,4 +1,3 @@
-//TODO: ORDER, tut mnogo
 const CrudController = require("./crud");
 const Moment = require('moment');
 
@@ -8,60 +7,119 @@ class OrderController extends CrudController {
         this.registerRoutes();
     }
 
-    async read(req, res) {
-        let properties = {};
-        let ind = 0;
-//TODO: CASE APPLY|NOT APLY
-        const status_id = await this.status.getIdbyName("APPROVED");
-        const thread = await this.service.read(req.params.id, status_id, {limit:10, page:(req.query.page?req.query.page:undefined)});
+    async readAll(req, res) {
+        switch (req.query.op) {
+            case 'accepted':
+                const orders = await this.service.readAccepted();
 
-        let utc = Moment.utc(thread.user.created);
-        thread.user.created = Moment(utc).toDate().toUTCString();
+                res.render("orders", {orders: orders});
+                break;
+            case 'notaccepted':
+                const orders = await this.service.readNotAccepted();
 
-        for (let iterator of thread.pusers) {
-            utc = Moment.utc(iterator.created);
-            iterator.created = Moment(utc).toDate().toUTCString();
+                res.render("orders", {orders: orders});
+                break;
+            default:
+                const orders = await this.service.readAll();
+                res.render("orders", {orders: orders});
+                break;
         }
-//TODO:order render
-        res.render("thread", { properties: thread, auth:req.body.auth });
+        }
+
+    async read(req, res) {
+        const order = await this.service.read(req.params.id);
+        res.render("order", {properties: order, id: req.body.order_id});
     }
 
-    async create(req, res){
-        if(!req.body.auth.logged )//&& !ISCLIENT
+    async create(req, res) {
+        if (!req.body.auth.client)
             throw this.service.errors.InsufficientAccountPermissions;
-        if(req.body.address == null || isNaN(parseInt(req.body.client)))
+        if (req.body.address == null || isNaN(parseInt(req.body.client)))
             throw this.service.errors.InvalidInput;
 //TODO: CHECK THIS MODEL
         await this.service.create({
-            client:req.body.client,
-            address:req.body.address
+            client: req.body.client,
+            address: req.body.address
         });
 
         res.status(200);
         res.end();
 
     }
-//TODO: ВСЯКИЕ ПРИКОЛЫ С case
-    async update(req, res){
-        if(!req.body.auth.logged )//&& !ISCLIENT
+
+    async delete(req, res) {
+        if (!req.body.auth.client)
             throw this.service.errors.InsufficientAccountPermissions;
+        if(req.params.id == req.body.auth.payload._id) {
 
-        if(req.body.address == null || isNaN(parseInt(req.body.client)) || isNaN(parseInt(req.body.acceptedBy))||isNaN(parseInt(req.body.distance))||isNaN(parseInt(req.body.bill)))
-            throw this.service.errors.InvalidInput;
-//TODO: CHECK MODEL RABOTOSPOSOBNOST
-        await this.service.update({
-            client:req.body.client,
-            address:req.body.address,
-            isAccepted:req.body.isAccepted,
-            acceptedBy:req.body.acceptedBy,
-            distance:req.body.distance,
-            bill:req.body.bill
-        });
-
+            await this.service.delete(req.params.id);
+        }
+        else
+            throw this.service.errors.InsufficientAccountPermissions;
         res.status(200);
         res.end();
 
     }
+//TODO:CHECK ВСЯКИЕ ПРИКОЛЫ С if
+    async update(req, res) {
+        switch (req.query.op) {
+            case 'accept':
+                if (req.body.auth.payload.employee) {
+                    if (isNaN(parseInt(req.body.acceptedBy)))
+                        throw this.service.errors.InvalidInput;
+                    await this.service.update({
+                        isAccepted: req.body.isAccepted,
+                        acceptedBy: req.body.acceptedBy
+                    });
+                    res.status(200);
+                    res.end();
+                }
+                else
+                    throw this.service.errors.InsufficientAccountPermissions;
+                break;
+            case 'reject':
+                if (req.body.auth.payload.employee) {
+                    await this.service.update({
+                        isAccepted: false,
+                        acceptedBy: null
+                    });
+                    res.status(200);
+                    res.end();
+                }
+                else
+                    throw this.service.errors.InsufficientAccountPermissions;
+                break;
+            case 'complete':
+                if (req.body.auth.payload.employee) {
+                    if (isNaN(parseInt(req.body.distance)) || isNaN(parseInt(req.body.bill)))
+                        throw this.service.errors.InvalidInput;
+                    await this.service.update({
+                        distance: req.body.distance,
+                        bill: req.body.bill
+                    });
+                    res.status(200);
+                    res.end();
+                }
+                else
+                    throw this.service.errors.InsufficientAccountPermissions;
+                break;
+            default:
+                if (req.body.auth.payload.client) {
+                    if (req.body.address == null || isNaN(parseInt(req.body.client)))
+                        throw this.service.errors.InvalidInput;
+                    await this.service.update({
+                        client: req.body.client,
+                        address: req.body.address
+                    });
+                    res.status(200);
+                    res.end();
+                }
+                else
+                    throw this.service.errors.InsufficientAccountPermissions;
+                break;
+        }
+    }
+
 }
 
 module.exports = (orderService) => {

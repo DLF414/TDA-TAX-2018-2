@@ -32,7 +32,6 @@ class ClientController extends CrudController {
                 break;
             default:
                 //TODO: CHECK CLIENT READ HERE, NADO RENDER
-                let user = await this.service.read(req.params.id);
                         if (req.body.auth.logged)
                             if (req.params.id != req.body.auth.payload._id|| !(req.body.auth.payload.employee))
                                 throw this.service.errors.InsufficientAccountPermissions;
